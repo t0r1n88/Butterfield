@@ -1,3 +1,4 @@
-word = 'академ стип ноябрь 2019г'
-
-print('академ' in word and 'ноябрь 2019г' in word )
+fio = 'Коротков Роман Сергеевич  '
+print(len(fio))
+c = fio.strip()
+print(len(c))

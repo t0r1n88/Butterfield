@@ -36,7 +36,7 @@ def extract_payment(data, word,word2, year):
                 except:
                     print(key_data,value_data)
                     continue
-    print(month_dict)
+    # print(month_dict)
 
     # Конвертируем в список, чтобы сохранять последовательность.
     temp_lst = list(month_dict.items())
@@ -54,10 +54,11 @@ def processing_payment(data: dict, year):
     :return: список? или словарь?
     """
     academ_temp_lst = extract_payment(data, 'акад','прем',year)
-    print(academ_temp_lst)
-    print('***')
+    # print(academ_temp_lst)
+    # print('***')
     socical_temp_lst = extract_payment(data,'соц','сир',year)
-    print(socical_temp_lst)
+    # print(socical_temp_lst)
+    return (academ_temp_lst,socical_temp_lst)
 
 
 def find_student(df, fio):
@@ -84,7 +85,7 @@ def find_student(df, fio):
         return dct_result_find
 
     except KeyError:
-        # если такого индекса нет то возвращаем пустой словарь
+        # если такого индекса(ФИО) нет то возвращаем пустой словарь
         no_result_find = dict()
         return no_result_find
 
@@ -94,28 +95,48 @@ def find_student(df, fio):
 path = 'resources/'
 # Тестовый студент
 # fio = 'Зоз-Ткачук Алексей Валентинович'
-fio = 'Будаев Борис Дармаевич '
+# 3 корпус
+# fio = 'Будаев Борис Дармаевич '
+#гл.корпус
+fio = 'Коротков Роман Сергеевич'
+# 1 корпус
+# fio = 'Будаев Борис Дармаевич '
+# Хоринск
+# fio = 'Будаев Борис Дармаевич '
+# Федералы
+# fio = 'Будаев Борис Дармаевич '
 # Список обрабатываемых листов
-# lst_lists = ['3 корпус', 'гл корпус', '1 корпус', '1 корпус', '1 корпус']
-lst_lists = ['3 корпус']
+# lst_lists = ['3 корпус', 'гл корпус', '1 корпус', 'Хоринск', 'Федералы']
+lst_lists = ['3 корпус','гл корпус','1 корпус','Хоринск','Федералы']
 
 for file in os.listdir(path):
-    # Содаем списки куда будуту заносится результаты обработанные данные
+    print(file)
+    # Содаем списки куда будут заносится результаты обработанные данные
     akadem_payment_lst = []
     social_payment_lst = []
-    orphan_payment_lst = []
     # находим год обрабатываемого файла
     year = re.search(r'\d{4}', file).group()
     # Начинаем поиск. Для этого в вложенном  цикле открываем листы каждого файла
     for i in range(len(lst_lists)):
         # С помощью skiprows пропускаем первую строку
-        df = pd.read_excel(f'{path}{file}', sheet_name=lst_lists[i], skiprows=1)
+        df = pd.read_excel(f'{path}{file}', sheet_name=lst_lists[i], skiprows=1,dtype={'Ф.И.О.':'str'})
+        print(lst_lists[i])
+        # Убираем пробельные символы в столбце  ФИО, чтобы потом не путаться
+        print(df['Ф.И.О.'].apply(type))
+        df['Ф.И.О.'] = df['Ф.И.О.'].apply(lambda x: x.strip())
         # Осуществляем поиск
         result = find_student(df, fio)
         print(result)
         # Если поиск ничего не нашел то ищем на следующем листе
         if result:
-            # Получаем список
+            # Получаем кортеж состоящий из списка академических выплат за год и списка социальных выплат за год
             year_payment = processing_payment(result, year)
+            akadem_payment_lst.extend(year_payment[0])
+            social_payment_lst.extend(year_payment[1])
+            print(akadem_payment_lst)
+            print(social_payment_lst)
+            # Выходим из списка ищущего в листах текущего файла и начинаем поиск в других файлах
+            break
+
         else:
             continue
