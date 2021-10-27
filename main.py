@@ -3,21 +3,48 @@ import os
 import re
 
 
-def extract_payment(data, word, year):
+def extract_payment(data, word,word2, year):
     """
     Функция для первичной обработки
     :param data:
-    :param word: ключевое слово типа стипендии(акад,соц,сирот)
+    :param word: ключевое слово типа стипендии(акад,соц)
+    :param word2: дополнительное ключевое слово(сир или прем)
     :param year: год обрабатываемого файла
-    :return:
+    :return:Список кортежей формата месяц год,сумм выплат
     """
     # Список куда будут заносится вычисленные данные
     output_lst = []
-    # Так как будут использоваться несколько файлов придется использовать регулярки
+    # Так как будут использоваться несколько файлов с разными годами придется использовать регулярки
     month_dict =dict()
-
+    # заполнили словарь с названиями месяцев и годом
     for key,value in data.items():
-        result =
+        temp_result = re.search(r'\s(\w+\s\d{4}г)',key)
+        if temp_result:
+            key_to_dict = temp_result.group()
+            if key_to_dict not in month_dict:
+                month_dict[key_to_dict] = 0
+    # Заполняем
+    for key_month,value_month in month_dict.items():
+        for key_data,value_data in data.items():
+            # если ключ месяца(например май 2019) есть в ключе базового словаря то значение этого ключа суммируем
+            # try на случай некорректных данных
+            if (key_month in key_data) and (word in key_data or word2 in key_data) :
+                try:
+                    # print(float(data[key_data]))
+                    month_dict[key_month] += float(data[key_data])
+
+                except:
+                    print(key_data,value_data)
+                    continue
+    print(month_dict)
+
+    # Конвертируем в список, чтобы сохранять последовательность.
+    temp_lst = list(month_dict.items())
+    return temp_lst
+
+
+
+
 
 def processing_payment(data: dict, year):
     """
@@ -26,7 +53,11 @@ def processing_payment(data: dict, year):
     :param year: год обрабаотываемого файла
     :return: список? или словарь?
     """
-    academ_temp_lst = extract_payment(data, 'акад',year)
+    academ_temp_lst = extract_payment(data, 'акад','прем',year)
+    print(academ_temp_lst)
+    print('***')
+    socical_temp_lst = extract_payment(data,'соц','сир',year)
+    print(socical_temp_lst)
 
 
 def find_student(df, fio):
@@ -45,6 +76,8 @@ def find_student(df, fio):
     # find_df.to_excel('fio_index.xlsx')
     try:
         result_find = find_df.loc[fio]
+        # Заменяем пустые значения на 0.0 , чтобы впоследствии нормально слаживать значения
+        result_find = result_find.fillna('0.0')
         # Превращаем в словарь
         dct_result_find = result_find.to_dict()
         # Возвращаем найденую строку
