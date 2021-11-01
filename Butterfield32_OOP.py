@@ -15,7 +15,6 @@ class Window(Tk):
     fio = ''
 
     def __init__(self):
-
         super().__init__()
         self.title('Butterfield')
         self.geometry('1024x768')
@@ -26,32 +25,34 @@ class Window(Tk):
 
         # Создаем вкладку справки о выплатах студентам
         self.tab_payment = ttk.Frame(self.tab_control)
-        self.tab_control.add(self.tab_payment, text='Создание справок о выплатах')
+        self.tab_control.add(self.tab_payment, text='Создание единичной справки о выплатах')
         self.tab_control.pack(expand=1, fill='both')
 
         # Добавляем виджеты на вкладку
         # Создаем метку для описания назначения программы
-        self.lbl_hello = Label(self.tab_payment, text='Скрипт для создания справок о выплатах')
+        self.lbl_hello = Label(self.tab_payment, text='Скрипт для создания справки о выплатах')
         self.lbl_hello.grid(column=0, row=0, padx=10, pady=25)
 
         # Создаем кнопку Выбрать шаблон
 
-        self.btn_template_contract = Button(self.tab_payment, text='1) Выберите шаблон справки', font=('Arial Bold', 20),
-                                       command=self.select_file_template_payment_student
-                                       )
+        self.btn_template_contract = Button(self.tab_payment, text='1) Выберите шаблон справки',
+                                            font=('Arial Bold', 20),
+                                            command=self.select_file_template_payment_student
+                                            )
         self.btn_template_contract.grid(column=0, row=1, padx=10, pady=10)
 
         # Создаем кнопку Выбрать файлы с данными
         self.btn_data_contract = Button(self.tab_payment, text='2) Выберите файлы с данными', font=('Arial Bold', 20),
-                                   command=self.select_file_data_payment
-                                   )
+                                        command=self.select_file_data_payment
+                                        )
         self.btn_data_contract.grid(column=0, row=2, padx=10, pady=10)
 
         # Создаем кнопку для выбора папки куда будут генерироваться справка
 
-        self.btn_choose_end_folder_contract = Button(self.tab_payment, text='3) Выберите конечную папку', font=('Arial Bold', 20),
-                                                command=self.select_end_folder_payment_student
-                                                )
+        self.btn_choose_end_folder_contract = Button(self.tab_payment, text='3) Выберите конечную папку',
+                                                     font=('Arial Bold', 20),
+                                                     command=self.select_end_folder_payment_student
+                                                     )
         self.btn_choose_end_folder_contract.grid(column=0, row=3, padx=10, pady=10)
 
         # Создаем поле для ввода ФИО
@@ -59,9 +60,6 @@ class Window(Tk):
         self.input_field = Entry(self.tab_payment, justify='center', width=40, font=20)
         self.input_field.grid(column=0, row=4, padx=10, pady=10)
         self.input_field.focus()
-
-
-
 
         # # Создаем логотип
         # self.canvas = Canvas(tab_payment, height=320, width=550)
@@ -71,15 +69,92 @@ class Window(Tk):
 
         # Создаем кнопку для запуска функции генерации файлов
 
-        self.btn_create_file_payment = Button(self.tab_payment, text='4) Создать', font=('Arial Bold', 20),
-                                         command=self.excecute_script)
+        self.btn_create_file_payment = Button(self.tab_payment, text='4) Создать справку', font=('Arial Bold', 20),
+                                              command=self.excecute_script)
 
         self.btn_create_file_payment.grid(column=0, row=5, padx=10, pady=10)
 
+        # Создаем вкладку для массового создания справок
+        self.tab_payment_group = ttk.Frame(self.tab_control)
+        self.tab_control.add(self.tab_payment_group, text='Массовое создание справок о выплатах')
+        self.tab_control.pack(expand=1, fill='both')
+
+        # Добавляем виджеты на вкладку
+        # Создаем метку для описания назначения программы
+        self.lbl_hello = Label(self.tab_payment_group, text='Скрипт для массового создания справок о выплатах')
+        self.lbl_hello.grid(column=0, row=0, padx=10, pady=25)
+
+        # Создаем кнопку Выбрать шаблон
+
+        self.btn_group_template_contract = Button(self.tab_payment_group, text='1) Выберите шаблон справки',
+                                                  font=('Arial Bold', 20),
+                                                  command=self.select_file_template_payment_student
+                                                  )
+        self.btn_group_template_contract.grid(column=0, row=1, padx=10, pady=10)
+
+        # Создаем кнопку Выбрать файлы с данными
+        self.btn_group_data_contract = Button(self.tab_payment_group, text='2) Выберите файлы с данными',
+                                              font=('Arial Bold', 20),
+                                              command=self.select_file_data_payment
+                                              )
+        self.btn_group_data_contract.grid(column=0, row=2, padx=10, pady=10)
+
+        # Создаем кнопку для выбора папки куда будут генерироваться справка
+
+        self.btn_choose_group_end_folder_contract = Button(self.tab_payment_group, text='3) Выберите конечную папку',
+                                                           font=('Arial Bold', 20),
+                                                           command=self.select_end_folder_payment_student
+                                                           )
+        self.btn_choose_group_end_folder_contract.grid(column=0, row=3, padx=10, pady=10)
+
+        # Создаем кнопку для выбора файла со списком фамилий
+        self.btn_choose_fio_lst = Button(self.tab_payment_group, text='4) Выберите файл со списком фамилий',
+                                         font=('Arial Bold', 20),
+                                         command=self.select_fio_lst
+                                         )
+        self.btn_choose_fio_lst.grid(column=0, row=4, padx=10, pady=10)
+
+        # Создаем кнопку для создания справок
+        # Создавать отдельную функцию отличающуюся только способом ввода ФИО такое себе конечно, в будущем может быть
+        self.btn_group_create_file_payment = Button(self.tab_payment_group, text='5) Создать справки',
+                                                    font=('Arial Bold', 20),
+                                                    command=self.execute_script_group)
+
+        self.btn_group_create_file_payment.grid(column=0, row=5, padx=10, pady=10)
+
+    def execute_script_group(self):
+        """
+        Метод для отправки фио Student.generate_list_payment.
+        Фио берутся из одноколоночного списка эксель
+        :return:
+        """
+        # Считываем датафрейм и убираем пробельные символы
+        df = pd.read_excel(program_window.fio_lst)
+        df = df.applymap(lambda x: x.strip(), na_action='ignore')
+
+        for row in df.itertuples():
+            # row[1] ФИО
+            # row[2] Группа
+            Student.generate_list_payment(row[1], row[2])
+        messagebox.showinfo('Итог операции', 'Справки созданы')
+
     def excecute_script(self):
+        """
+        Метод чтобы получиьт текст из поля ввода и отправить его статическому методу, ура костыли
+        :return:
+        """
+
         fio = self.input_field.get()
         Student.generate_list_payment(fio)
 
+    @classmethod
+    def select_fio_lst(cls):
+        """
+        Метод для выбора файла со списком фамилий студентов для которых нужно сделать справки
+        :return: путь к файлу
+        """
+        cls.fio_lst = filedialog.askopenfilename(
+            filetypes=(('Excel files', '*.xlsx'), ('all files', '*.*')))
 
     @classmethod
     def select_file_template_payment_student(cls):
@@ -108,19 +183,19 @@ class Window(Tk):
         cls.end_folder = filedialog.askdirectory()
 
 
-class Student():
+class Student:
     """
     Класс  ищущий конткретного студента и обрабатывающий его данные. На выходе будет список
     """
 
     @staticmethod
-    def generate_list_payment(fio):
+    def generate_list_payment(fio, group=''):
         """
   #          Метод для генерации справки студента
+    :param fio : строка с ФИО студента
+    :param group : необязательный параметр группа студента
   #         :return: список
   #         """
-
-        print('For Lindy Booth!!!')
         print(fio)
         template = Window.template_payment
         lst_files = Window.lst_data_files
@@ -165,19 +240,33 @@ class Student():
         # Приводим к удобному виду
         output_lst_academ = [f'{month[0]} {month[1]} руб.' for month in akadem_payment_lst]
         output_lst_social = [f'{month[0]} {month[1]} руб.' for month in social_payment_lst]
+
+        # Чтобы при массовом создании не спамить окна сообщений поставим условие что если group не равно '' то
+        # выдаем сообщение только по окончании  генерации
         # Если мы получили результат то сохраняем справку. После окончания генерации показываем сообщение о успещном завершении
         # если студент не найден то показываем предупреждение.
-        if output_lst_academ and output_lst_social:
-            doc = DocxTemplate(template)
-            # заполняем словарь
+        if group == '':
+            if output_lst_academ and output_lst_social:
+                doc = DocxTemplate(template)
+                # заполняем словарь
 
-            context = {'FIO': fio, 'lst_payment_academ': output_lst_academ, 'lst_payment_social': output_lst_social}
-            doc.render(context)
-            doc.save(f'{end_folder}/{fio}.docx')
-            messagebox.showinfo('Итог операции','Справка создана!')
+                context = {'FIO': fio, 'GROUP': group, 'lst_payment_academ': output_lst_academ,
+                           'lst_payment_social': output_lst_social}
+                doc.render(context)
+                doc.save(f'{end_folder}/{fio}.docx')
+                messagebox.showinfo('Итог операции', 'Справка создана!')
+            else:
+                messagebox.showwarning('Итог операции', ' Студент не найден \n Проверьте правильность написания ФИО')
         else:
-            messagebox.showwarning('Итог операции',' Студент не найден \n Проверьте правильность написания ФИО')
+            if output_lst_academ and output_lst_social:
+                doc = DocxTemplate(template)
+                # заполняем словарь
 
+                context = {'FIO': fio, 'GROUP': group, 'lst_payment_academ': output_lst_academ,
+                           'lst_payment_social': output_lst_social}
+                doc.render(context)
+                doc.save(f'{end_folder}/{fio}.docx')
+                print('Справка создана!')
 
     @staticmethod
     def find_student(df, fio):
